@@ -18,7 +18,18 @@ add_library( # Sets the name of the library.
 
              # Provides a relative path to your source file(s).
              src/main/cpp/native-lib.cpp
-             src/main/cpp/native-log.cpp)
+             src/main/cpp/native-log.cpp
+             src/main/cpp/native-image.cpp)
+
+
+#include 这个目录下所有的文件
+include_directories(src/main/cpp/include)
+
+#导入jpeg动态库 SHARED；静态库为STATIC
+add_library(jpeg SHARED IMPORTED )
+
+#对应so目录
+set_target_properties(jpeg PROPERTIES IMPORTED_LOCATION ../../../../libs/armeabi-v7a/libjpeg.so)
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
@@ -39,7 +50,9 @@ find_library( # Sets the name of the path variable.
 
 target_link_libraries( # Specifies the target library.
                        native-all
-
+                       jpeg
+                       #jnigraphics这个是android下面的bitmap.h对应的库
+                       jnigraphics
                        # Links the target library to the log library
                        # included in the NDK.
                        ${log-lib} )
