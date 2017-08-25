@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.sus.jnicmake.jni.JniAlgorithm;
+import com.sus.jnicmake.jni.JniFoundation;
 import com.sus.jnicmake.jni.JniImage;
 import com.sus.jnicmake.jni.JniManager;
 import com.sus.jnicmake.utils.handler.CommonHandler;
@@ -55,11 +56,19 @@ public class MainActivity extends AppCompatActivity implements IHandlerMessage {
         JniAlgorithm jniAlgorithm = new JniAlgorithm();
         Log.d(TAG,jniAlgorithm.reverseSentence("I am a student."));
 
+        intFoundation();
+
         // Example jpeg
         findViewById(R.id.btn_compress_display);
         ivCompress = (ImageView) findViewById(R.id.ivCompress);
         handler = new CommonHandler<>(this);
         avLoadingIndicatorView = (AVLoadingIndicatorView) findViewById(R.id.avi);
+    }
+
+    private void intFoundation() {
+        JniFoundation jniFoundation = new JniFoundation();
+        Log.d("jniFoundation",jniFoundation.stringFromJNI());
+
     }
 
     public void onCompressDisplay(View view) {
