@@ -12,4 +12,21 @@ public class JniFoundation {
 
     public native String stringFromJNI();
 
+    public int num = 10;
+
+    public native int addNum();
+
+    //field ----
+    public static String name = "SuS";
+
+    public native void accessStaticField();
+
+    private int age = 21;
+
+    public int getAge(){
+        return age;
+    }
+
+    public native void accessPrivateField();
+
 }

@@ -75,7 +75,16 @@ public class MainActivity extends AppCompatActivity implements IHandlerMessage {
 
     private void intFoundation() {
         JniFoundation jniFoundation = new JniFoundation();
-        Log.d("jniFoundation",jniFoundation.stringFromJNI());
+        Log.d("jF stringFromJNI",jniFoundation.stringFromJNI());
+        Log.d("jF addNum",jniFoundation.addNum()+"");
+
+        jniFoundation.accessStaticField();
+        Log.d("jF accessStaticField", jniFoundation.name);
+
+        Log.i("main----age修改前",jniFoundation.getAge()+"");
+        jniFoundation.accessPrivateField();
+        Log.i("main----age修改后",jniFoundation.getAge()+"");
+
 
     }
 
