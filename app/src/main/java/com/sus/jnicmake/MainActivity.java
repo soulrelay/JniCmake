@@ -15,6 +15,7 @@ import com.sus.jnicmake.jni.JniImage;
 import com.sus.jnicmake.jni.JniManager;
 import com.sus.jnicmake.utils.handler.CommonHandler;
 import com.sus.jnicmake.utils.handler.IHandlerMessage;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import java.io.File;
 import java.io.InputStream;
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements IHandlerMessage {
     private String mFilePath;
     private ImageView ivCompress;
     private CommonHandler<MainActivity> handler;
+    private AVLoadingIndicatorView avLoadingIndicatorView;
 
     private static final String TAG = MainActivity.class.getCanonicalName();
 
@@ -53,9 +55,11 @@ public class MainActivity extends AppCompatActivity implements IHandlerMessage {
         findViewById(R.id.btn_compress_display);
         ivCompress = (ImageView) findViewById(R.id.ivCompress);
         handler = new CommonHandler<>(this);
+        avLoadingIndicatorView = (AVLoadingIndicatorView) findViewById(R.id.avi);
     }
 
     public void onCompressDisplay(View view) {
+        avLoadingIndicatorView.show();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -105,7 +109,8 @@ public class MainActivity extends AppCompatActivity implements IHandlerMessage {
             case MSG_COMPRESS_SUCCESS:
                 double arg2 = msg.arg2;
                 double size = arg2/1024/1024;
-                Toast.makeText(MainActivity.this, "原始图片大小为" + new DecimalFormat("######0.0").format(size) + "MB" + "图片压缩成功压缩至" + msg.arg1 + "kb", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "原始图片大小为" + new DecimalFormat("######0.0").format(size) + "MB"
+                        + "图片压缩成功压缩至" + msg.arg1 + "kb", Toast.LENGTH_LONG).show();
                 Bitmap bitmap = BitmapFactory.decodeFile(mFilePath);
                 ivCompress.setImageBitmap(bitmap);
                 break;
@@ -118,6 +123,7 @@ public class MainActivity extends AppCompatActivity implements IHandlerMessage {
             default:
                 break;
         }
+        avLoadingIndicatorView.hide();
     }
 
 
