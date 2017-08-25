@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.sus.jnicmake.jni.JniAlgorithm;
 import com.sus.jnicmake.jni.JniImage;
 import com.sus.jnicmake.jni.JniManager;
 import com.sus.jnicmake.utils.handler.CommonHandler;
@@ -50,6 +51,9 @@ public class MainActivity extends AppCompatActivity implements IHandlerMessage {
         // Example 2
         JniManager jniManager = new JniManager();
         Log.d(TAG, jniManager.askQuestion("大象的左耳朵像什么？"));
+        // Example 3
+        JniAlgorithm jniAlgorithm = new JniAlgorithm();
+        Log.d(TAG,jniAlgorithm.reverseSentence("I am a student"));
 
         // Example jpeg
         findViewById(R.id.btn_compress_display);

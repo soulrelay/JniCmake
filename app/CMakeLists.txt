@@ -19,7 +19,8 @@ add_library( # Sets the name of the library.
              # Provides a relative path to your source file(s).
              src/main/cpp/native-lib.cpp
              src/main/cpp/native-log.cpp
-             src/main/cpp/native-image.cpp)
+             src/main/cpp/native-image.cpp
+             src/main/cpp/native-algorithm.cpp)
 
 
 #include 这个目录下所有的文件
