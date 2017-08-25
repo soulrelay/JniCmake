@@ -65,10 +65,10 @@ public class MainActivity extends AppCompatActivity implements IHandlerMessage {
             public void run() {
                 try {
 
-                    AssetFileDescriptor fd = getAssets().openFd("test.jpg");
+                    AssetFileDescriptor fd = getAssets().openFd("test.png");
                     long size = fd.getLength();
                     InputStream in = getResources().getAssets()
-                            .open("test.jpg");
+                            .open("test.png");
                     Bitmap bitmap = BitmapFactory.decodeStream(in);
                     File dirFile = getExternalCacheDir();
                     if (!dirFile.exists()) {
