@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements IHandlerMessage {
         Log.d(TAG, jniManager.askQuestion("大象的左耳朵像什么？"));
         // Example 3
         JniAlgorithm jniAlgorithm = new JniAlgorithm();
-        Log.d(TAG,jniAlgorithm.reverseSentence("I am a student"));
+        Log.d(TAG,jniAlgorithm.reverseSentence("I am a student."));
 
         // Example jpeg
         findViewById(R.id.btn_compress_display);
