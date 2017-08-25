@@ -1,5 +1,6 @@
 package com.sus.jnicmake;
 
+import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import com.sus.jnicmake.utils.handler.IHandlerMessage;
 
 import java.io.File;
 import java.io.InputStream;
+import java.text.DecimalFormat;
 
 import static com.sus.jnicmake.MainActivity.HandlerMsg.MSG_COMPRESS_SUCCESS;
 
@@ -59,6 +61,8 @@ public class MainActivity extends AppCompatActivity implements IHandlerMessage {
             public void run() {
                 try {
 
+                    AssetFileDescriptor fd = getAssets().openFd("test.jpg");
+                    long size = fd.getLength();
                     InputStream in = getResources().getAssets()
                             .open("test.jpg");
                     Bitmap bitmap = BitmapFactory.decodeStream(in);
@@ -71,14 +75,14 @@ public class MainActivity extends AppCompatActivity implements IHandlerMessage {
                     File jpegFile = new File(dirFile, filename);
 
                     mFilePath = jpegFile.getAbsolutePath();
-                    boolean flag = false;
+                    boolean flag;
                     if (bitmap != null) {
                         flag = JniImage.compressBitmap(bitmap, bitmap.getWidth(), bitmap.getHeight(), mFilePath, 20);
                         if (flag) {
                             Message msg = new Message();
                             msg.arg1 = (int) (jpegFile.length() / 1024);
-                            msg.arg2 =
-                                    msg.what = HandlerMsg.MSG_COMPRESS_SUCCESS;
+                            msg.arg2 = (int) (size);
+                            msg.what = HandlerMsg.MSG_COMPRESS_SUCCESS;
                             handler.sendMessage(msg);
                         } else {
                             handler.sendEmptyMessage(HandlerMsg.MSG_COMPRESS_FAIL);
@@ -99,7 +103,9 @@ public class MainActivity extends AppCompatActivity implements IHandlerMessage {
     public void handlerCallback(Message msg) {
         switch (msg.what) {
             case MSG_COMPRESS_SUCCESS:
-                Toast.makeText(MainActivity.this, "图片压缩成功压缩至" + msg.arg1 + "kb", Toast.LENGTH_LONG).show();
+                double arg2 = msg.arg2;
+                double size = arg2/1024/1024;
+                Toast.makeText(MainActivity.this, "原始图片大小为" + new DecimalFormat("######0.0").format(size) + "MB" + "图片压缩成功压缩至" + msg.arg1 + "kb", Toast.LENGTH_LONG).show();
                 Bitmap bitmap = BitmapFactory.decodeFile(mFilePath);
                 ivCompress.setImageBitmap(bitmap);
                 break;
