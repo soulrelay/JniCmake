@@ -5,7 +5,7 @@
 #include <malloc.h>
 
 extern "C" {
-#include "jpeglib.h"
+#include "jpeg/jpeglib.h"
 }
 
 typedef uint8_t BYTE;
