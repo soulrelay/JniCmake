@@ -52,17 +52,25 @@ public class MainActivity extends AppCompatActivity implements IHandlerMessage {
         // Example 2
         JniManager jniManager = new JniManager();
         Log.d(TAG, jniManager.askQuestion("大象的左耳朵像什么？"));
-        // Example 3
-        JniAlgorithm jniAlgorithm = new JniAlgorithm();
-        Log.d(TAG,jniAlgorithm.reverseSentence("I am a student."));
+
+        initAlgorithm();
 
         intFoundation();
 
+        initJpeg();
+    }
+
+    private void initJpeg() {
         // Example jpeg
         findViewById(R.id.btn_compress_display);
         ivCompress = (ImageView) findViewById(R.id.ivCompress);
         handler = new CommonHandler<>(this);
         avLoadingIndicatorView = (AVLoadingIndicatorView) findViewById(R.id.avi);
+    }
+
+    private void initAlgorithm() {
+        JniAlgorithm jniAlgorithm = new JniAlgorithm();
+        Log.d(TAG,jniAlgorithm.reverseSentence("I am a student."));
     }
 
     private void intFoundation() {
