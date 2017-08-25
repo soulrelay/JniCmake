@@ -3,8 +3,8 @@ package com.sus.jnicmake;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -12,13 +12,22 @@ import android.widget.Toast;
 
 import com.sus.jnicmake.jni.JniImage;
 import com.sus.jnicmake.jni.JniManager;
+import com.sus.jnicmake.utils.handler.CommonHandler;
+import com.sus.jnicmake.utils.handler.IHandlerMessage;
 
 import java.io.File;
 import java.io.InputStream;
 
-public class MainActivity extends AppCompatActivity {
+import static com.sus.jnicmake.MainActivity.HandlerMsg.MSG_COMPRESS_SUCCESS;
+
+/**
+ * Created by SuS
+ * Date: 17/8/24
+ */
+public class MainActivity extends AppCompatActivity implements IHandlerMessage {
     private String mFilePath;
-    private ImageView mDisplayIv;
+    private ImageView ivCompress;
+    private CommonHandler<MainActivity> handler;
 
     private static final String TAG = MainActivity.class.getCanonicalName();
 
@@ -32,17 +41,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Example of a call to a native method
+        // Example 1
         Log.d(TAG, stringFromJNI());
+        // Example 2
         JniManager jniManager = new JniManager();
         Log.d(TAG, jniManager.askQuestion("大象的左耳朵像什么？"));
 
-        findViewById(R.id.btn_path);
-        findViewById(R.id.btn_display);
-        mDisplayIv = (ImageView) findViewById(R.id.img_view);
+        // Example jpeg
+        findViewById(R.id.btn_compress_display);
+        ivCompress = (ImageView) findViewById(R.id.ivCompress);
+        handler = new CommonHandler<>(this);
     }
 
-    public void onGetPath(View view) {
+    public void onCompressDisplay(View view) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -63,10 +74,18 @@ public class MainActivity extends AppCompatActivity {
                     boolean flag = false;
                     if (bitmap != null) {
                         flag = JniImage.compressBitmap(bitmap, bitmap.getWidth(), bitmap.getHeight(), mFilePath, 20);
+                        if (flag) {
+                            Message msg = new Message();
+                            msg.arg1 = (int) (jpegFile.length() / 1024);
+                            msg.arg2 =
+                                    msg.what = HandlerMsg.MSG_COMPRESS_SUCCESS;
+                            handler.sendMessage(msg);
+                        } else {
+                            handler.sendEmptyMessage(HandlerMsg.MSG_COMPRESS_FAIL);
+                        }
                     } else {
-                        //Toast.makeText(MainActivity.this, "file not found", Toast.LENGTH_SHORT).show();
+                        handler.sendEmptyMessage(HandlerMsg.MSG_FILE_NOT_FOUND);
                     }
-                    //Toast.makeText(MainActivity.this, flag ? "success 文件大小" + (jpegFile.length()/1024)+"kb": "fail", Toast.LENGTH_SHORT).show();
                 } catch (Exception e) {
 
                 }
@@ -76,14 +95,35 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void onDisplay(View view) {
-        if (TextUtils.isEmpty(mFilePath)) {
-            Toast.makeText(MainActivity.this, "请先压缩图片", Toast.LENGTH_SHORT).show();
-            return;
+    @Override
+    public void handlerCallback(Message msg) {
+        switch (msg.what) {
+            case MSG_COMPRESS_SUCCESS:
+                Toast.makeText(MainActivity.this, "图片压缩成功压缩至" + msg.arg1 + "kb", Toast.LENGTH_LONG).show();
+                Bitmap bitmap = BitmapFactory.decodeFile(mFilePath);
+                ivCompress.setImageBitmap(bitmap);
+                break;
+            case HandlerMsg.MSG_COMPRESS_FAIL:
+                Toast.makeText(MainActivity.this, "图片压缩失败", Toast.LENGTH_LONG).show();
+                break;
+            case HandlerMsg.MSG_FILE_NOT_FOUND:
+                Toast.makeText(MainActivity.this, "待压缩文件不存在", Toast.LENGTH_LONG).show();
+                break;
+            default:
+                break;
         }
-        Bitmap bitmap = BitmapFactory.decodeFile(mFilePath);
-        mDisplayIv.setImageBitmap(bitmap);
     }
+
+
+    public interface HandlerMsg {
+
+        int MSG_COMPRESS_SUCCESS = 2001;//图片压缩成功
+
+        int MSG_COMPRESS_FAIL = 2002;//图片压缩失败
+
+        int MSG_FILE_NOT_FOUND = 2003;//未找到指定文件
+    }
+
 
     /**
      * A native method that is implemented by the 'native-lib' native library,
