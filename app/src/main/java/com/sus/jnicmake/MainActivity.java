@@ -15,6 +15,7 @@ import com.sus.jnicmake.jni.JniAlgorithm;
 import com.sus.jnicmake.jni.JniFoundation;
 import com.sus.jnicmake.jni.JniImage;
 import com.sus.jnicmake.jni.JniManager;
+import com.sus.jnicmake.model.Person;
 import com.sus.jnicmake.utils.handler.CommonHandler;
 import com.sus.jnicmake.utils.handler.IHandlerMessage;
 import com.wang.avi.AVLoadingIndicatorView;
@@ -22,6 +23,7 @@ import com.wang.avi.AVLoadingIndicatorView;
 import java.io.File;
 import java.io.InputStream;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 import static com.sus.jnicmake.MainActivity.HandlerMsg.MSG_COMPRESS_SUCCESS;
 
@@ -81,9 +83,39 @@ public class MainActivity extends AppCompatActivity implements IHandlerMessage {
         jniFoundation.accessStaticField();
         Log.d("jF accessStaticField", jniFoundation.name);
 
-        Log.i("main----age修改前",jniFoundation.getAge()+"");
+        Log.d("main----age修改前",jniFoundation.getAge()+"");
         jniFoundation.accessPrivateField();
-        Log.i("main----age修改后",jniFoundation.getAge()+"");
+        Log.d("main----age修改后",jniFoundation.getAge()+"");
+
+        //method
+        Log.d("main----sex赋值前",jniFoundation.getSex());
+        jniFoundation.accessPublicMethod();
+        Log.d("main----sex赋值后",jniFoundation.getSex());
+
+
+        Log.d("main----height调用java方法", jniFoundation.getHeight()+"");
+
+        Log.d("main----height调用JNI方法",jniFoundation.accessStaticMethod()+"");
+        Log.d("main----调用java super方法",jniFoundation.accessSuperMethod());
+
+        //传参数
+        Log.i("main----intMethod",jniFoundation.intMethod(4)+"");
+        Log.i("main----booleanMethod",jniFoundation.booleanMethod(true)+"");
+        Log.i("main----stringMethod",jniFoundation.stringMethod("hello"));
+        Log.i("main----intArrayMethod",jniFoundation.intArrayMethod(new int[]{3,5,6,12,46,33})+"");
+        Log.i("main----objectMethod",jniFoundation.objectMethod(new Person()).toString()+"");
+
+
+        ArrayList<Person> personList = new ArrayList<>();
+        Person person;
+        for (int i =0 ;i<3;i++){
+            person = new Person();
+            person.setName("lily");
+            person.setAge(10+i);
+            personList.add(person);
+        }
+        Log.i("main----输出java list",personList.toString());
+        Log.i("main----输出jni list",jniFoundation.personArrayListMethod(personList).toString());
 
 
     }
