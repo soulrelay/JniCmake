@@ -118,6 +118,23 @@ public class MainActivity extends AppCompatActivity implements IHandlerMessage {
         Log.i("main----输出jni list",jniFoundation.personArrayListMethod(personList).toString());
 
 
+        //字符串处理
+
+        Log.i("main----handlerString",jniFoundation.handlerString(" happy new year"));
+        byte [] bytes = jniFoundation.handlerStrToByte("honjane");
+        for (byte b : bytes) {
+            Log.i("main---handlerStrToByte", (char)b+"");
+        }
+
+        //异常
+        try {
+//            jniFoundation.doit();
+            jniFoundation.JNUThrowByName("callback", "this is c NoSuchElementException");
+        } catch (Exception e) {
+            Log.e("main---", "java in " + e.toString());
+        }
+
+
     }
 
     public void onCompressDisplay(View view) {

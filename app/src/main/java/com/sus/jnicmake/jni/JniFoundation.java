@@ -3,6 +3,7 @@ package com.sus.jnicmake.jni;
 import com.sus.jnicmake.model.Person;
 
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 /**
  * Created by SuS on 2017/8/24.
@@ -68,5 +69,19 @@ public class JniFoundation extends SuperJniFoundation {
     public native Person objectMethod(Person person);
 
     public native ArrayList<Person> personArrayListMethod(ArrayList<Person> persons);
+
+    public native void printC();
+
+
+    //字符串处理
+
+    public native String handlerString(String text);
+    public native byte[] handlerStrToByte(String text);
+
+    public native void doit() throws IllegalArgumentException;
+    public native void JNUThrowByName(String name,String msg) throws NoSuchElementException;
+    private void callback() throws NullPointerException{
+        throw new NullPointerException("java null prointer");
+    }
 
 }
